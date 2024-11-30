@@ -1,0 +1,4 @@
+flask
+joblib
+flask-cors
+scikit-learn
