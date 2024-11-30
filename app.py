@@ -1,11 +1,15 @@
 from flask import Flask, request, jsonify
 import joblib
 from flask_cors import CORS
+from dotenv import load_dotenv
+import os
 
+load_dotenv()
 
 # Initialize the Flask app
 app = Flask(__name__)
-CORS(app)  #Enable Cors for React Integration
+
+CORS(app, origins=[os.getenv('CORS_ORIGIN')])  # More specific CORS configuration
 
 #Load the trained model and vectorizer
 vectorizer = joblib.load("./models/tfidf_vectorizer.joblib")
@@ -46,4 +50,5 @@ def detect_spam():
     return jsonify({'is_spam': bool(prediction)})
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    port = int(os.getenv('PORT', 10000))
+    app.run(host=os.getenv('HOST', '0.0.0.0'), port=port, debug=os.getenv('FLASK_DEBUG', '0') == '1')
