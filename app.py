@@ -26,7 +26,7 @@ models = {
 
 def detect_spam():
     data = request.json
-    message = data.get('message', '')
+    message = data.get('message', '').strip()
     selected_model = data.get('model', 'model1')  # Default to model1
 
     if not message:
@@ -39,7 +39,10 @@ def detect_spam():
     model = models[selected_model]
 
     # Transform the message using the vectorizer
-    transformed_message = vectorizer.transform([message])
+    try:
+        transformed_message = vectorizer.transform([message])
+    except Exception as e:
+        return jsonify({'error': 'Error processing message'}), 500
 
     # Convert to dense if the selected model is SVM
     if selected_model == 'model3':  # Assuming model3 is the SVM
